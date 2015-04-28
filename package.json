@@ -1,0 +1,20 @@
+{
+  "name": "not-out",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./bin/not-out.coffee",
+  "scripts": {
+    "start": "coffee ./bin/index.coffee",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.9.24",
+    "github": "^0.2.3",
+    "lodash": "^3.5.0",
+    "moment": "^2.9.0",
+    "restler": "^3.2.2",
+    "underscore.string": "^3.0.3"
+  }
+}
