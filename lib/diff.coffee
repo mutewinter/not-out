@@ -106,6 +106,7 @@ diff = (fullRepoName, base, head, options = {}) ->
 
       finalMessages.push messages.join('\n\n')
       finalMessages.push "\nView the whole diff #{diffURL}"
+      resolve(finalMessages)
     )
 
 
