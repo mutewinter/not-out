@@ -1,8 +1,9 @@
 {
   "name": "not-out",
   "version": "0.0.1",
-  "description": "",
-  "main": "./bin/not-out.coffee",
+  "description": "What hasn't been deployed",
+  "repository": "https+git://github.com/mutewinter/not-out.git",
+  "main": "index.coffee",
   "scripts": {
     "start": "coffee ./bin/index.coffee",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +16,7 @@
     "lodash": "^3.5.0",
     "moment": "^2.9.0",
     "restler": "^3.2.2",
-    "underscore.string": "^3.0.3"
+    "underscore.string": "^3.0.3",
+    "coffee-script": "~1.9.0"
   }
 }
