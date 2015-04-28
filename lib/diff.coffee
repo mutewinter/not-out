@@ -18,6 +18,7 @@ github.authenticate(type: 'oauth', token: ACCESS_TOKEN)
 
 diff = (fullRepoName, base, head, options = {}) ->
   new Promise (resolve, reject) ->
+    finalMessages = []
     [user, repo] = fullRepoName.split('/')
     emptyMessage = _.template(options.messages.empty)
     summaryMessage = _.template(options.messages.summary)
@@ -31,16 +32,16 @@ diff = (fullRepoName, base, head, options = {}) ->
     , (error, data) ->
       messages = []
       if error
-        messages.push "Error fetching commit diff for #{user}/#{repo}"
-        messages.push "Using base: #{base} and head: #{head}"
-        messages.push "View the diff #{diffURL}"
-        return resolve(messages)
+        finalMessages.push "Error fetching commit diff for #{user}/#{repo}"
+        finalMessages.push "Using base: #{base} and head: #{head}"
+        finalMessages.push "View the diff #{diffURL}"
+        return resolve(finalMessages)
 
       commits = data.commits
 
       if commits.length is 0
-        messages.push emptyMessage(options.parameters)
-        return resolve(messages)
+        finalMessages.push emptyMessage(options.parameters)
+        return resolve(finalMessages)
 
       groupedCommits = _.groupBy commits, (commit) ->
         type = commit.commit.message.match(TYPE_RE)?[1]
@@ -68,11 +69,11 @@ diff = (fullRepoName, base, head, options = {}) ->
       oldestCommitDate = moment(_.first(commits).commit.committer.date)
       lastDeployMessage = "Estimated last deploy: #{oldestCommitDate.fromNow()}."
       if options.showLastDeployEstimate
-        messages.push("#{summary} #{lastDeployMessage}")
+        finalMessages.push("#{summary} #{lastDeployMessage}")
       else
-        messages.push(summary)
+        finalMessages.push(summary)
 
-      messages.push('\n')
+      finalMessages.push('\n')
 
       # Individaul commit messages
       messages = []
@@ -98,14 +99,13 @@ diff = (fullRepoName, base, head, options = {}) ->
             # Skip merge commits
             return
           else
-            messages.push "Error: Invalid commit type #{commitType}"
+            finalMessages.push "Error: Invalid commit type #{commitType}"
 
         finalMessage = "#{heading}\n#{perCommitMessages.join('\n')}"
         messages.push(finalMessage)
 
-      messages.push messages.join('\n\n')
-      messages.push "\nView the whole diff #{diffURL}"
-      resolve(messages)
+      finalMessages.push messages.join('\n\n')
+      finalMessages.push "\nView the whole diff #{diffURL}"
     )
 
 
