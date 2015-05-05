@@ -82,11 +82,14 @@ diff = (fullRepoName, base, head, options = {}) ->
         return unless commits?.length
 
         perCommitMessages = commits.reverse().map (commit) ->
-          login = commit.author.login
+          if commit.author?.login
+            userText = "@#{commit.author.login}"
+          else
+            userText = commit.commit.author.name
           message = commit.commit.message.split('\n')[0]
           message = message.replace(TYPE_RE, '').trim()
           date = moment(commit.commit.committer.date)
-          "- #{message} @#{login} (#{date.fromNow()})"
+          "- #{message} #{userText} (#{date.fromNow()})"
 
         switch commitType
           when 'feat'
