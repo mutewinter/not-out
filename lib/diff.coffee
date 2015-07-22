@@ -8,6 +8,7 @@ Promise = require 'bluebird'
 TYPE_RE = /(^(\w+)):/
 
 ACCESS_TOKEN = process.env.NOT_OUT_GITHUB_ACCESS_TOKEN
+COMMIT_TYPES_TO_DISPLAY = ['feat', 'fix', 'other']
 
 if !ACCESS_TOKEN
   console.log 'No access token found, exitting.'
@@ -45,8 +46,8 @@ diff = (fullRepoName, base, head, options = {}) ->
 
       groupedCommits = _.groupBy commits, (commit) ->
         type = commit.commit.message.match(TYPE_RE)?[1]
-        type = 'merge' if /^Merge/.test(commit.commit.message)
-        if _.includes(['feat', 'fix', 'merge'], type) then type else 'other'
+        return 'merge' if /^Merge/.test(commit.commit.message)
+        if _.includes(COMMIT_TYPES_TO_DISPLAY, type) then type else 'other'
 
       features = groupedCommits.feat?.length
       fixes = groupedCommits.fix?.length
@@ -61,7 +62,14 @@ diff = (fullRepoName, base, head, options = {}) ->
           "#{other} other commit#{if other is 1 then '' else 's'}"
       ]
       message = toSentence(_.compact(messageParts))
-      verb = if commits.length is 1 then 'has' else 'have'
+
+      commitsToDisplayCount =
+        _.reduce(COMMIT_TYPES_TO_DISPLAY, (total, type) ->
+          total += groupedCommits[type].length if groupedCommits[type]
+          total
+        , 0)
+      verb = if commitsToDisplayCount is 1 then 'has' else 'have'
+
       summary = summaryMessage(
         _.merge({}, options.parameters, message: message, verb: verb)
       )
@@ -77,7 +85,7 @@ diff = (fullRepoName, base, head, options = {}) ->
 
       # Individaul commit messages
       messages = []
-      ['feat', 'fix', 'other'].forEach (commitType) ->
+      COMMIT_TYPES_TO_DISPLAY.forEach (commitType) ->
         commits = groupedCommits[commitType]
         return unless commits?.length
 
