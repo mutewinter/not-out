@@ -11,8 +11,7 @@ ACCESS_TOKEN = process.env.NOT_OUT_GITHUB_ACCESS_TOKEN
 COMMIT_TYPES_TO_DISPLAY = ['feat', 'fix', 'other']
 
 if !ACCESS_TOKEN
-  console.log 'No access token found, exitting.'
-  process.exit()
+  console.log 'No access token found. Please define the environment variable, NOT_OUT_GITHUB_ACCESS_TOKEN'
 
 github = new GitHubApi(version: "3.0.0")
 github.authenticate(type: 'oauth', token: ACCESS_TOKEN)
